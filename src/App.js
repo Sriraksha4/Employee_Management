@@ -1,17 +1,18 @@
-import Header from './Header';
-import Footer from './Footer';
-import Login from './Login';
- 
- 
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Login from "./Login";
+import Register from "./Registration";
+
 function App() {
- 
   return (
-    <>
-      <Header/>
-      <Login/>
-      <Footer/>
-    </>
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
- 
+
 export default App;
