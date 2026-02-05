@@ -1,125 +1,191 @@
 import { useState } from "react";
 
-const Register = () => {
+const  Registration=()=>{
 
-    const [form, setForm] = useState({
-        firstname: "",
-        lastname: "",
-        gender: "",
-        hobbies: "",
-        email: "",
-        password: ""
+    const [form,setForm]=useState({
+        email:"",
+        password:"",
+        firstName:"",
+        lastName:"",
+        gender:"",
+        hobbies:""
+
     });
-
     const [errors, setErrors] = useState({});
+    const [status, setStatus] = useState({ type: "", message: "" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
 
-    // handle change
-    const handleChange = (e) => {
-        setForm({
-            ...form,
-            [e.target.name]: e.target.value
-        });
-
-        setErrors((prev) => ({
-            ...prev,
-            [e.target.name]: ""
-        }));
-    };
+       const handleChnage=(e)=>{
+            console.log("Changed="+e.target.name);
+            console.log("Changed="+e.target.value);
+            setForm({
+                ...form,
+                [e.target.name]:e.target.value
+            });
+            setErrors((prev) => ({ ...prev, [e.target.name]: "" }));
 
 
-    // validation (same like sir)
+       }; 
+    
     const validate = () => {
-
         const nextErrors = {};
-
-        const firstname = form.firstname.trim();
-        const lastname = form.lastname.trim();
-        const gender = form.gender.trim();
-        const hobbies = form.hobbies.trim();
         const email = form.email.trim();
         const password = form.password.trim();
-
-
-        if (!firstname) nextErrors.firstname = "Firstname is required.";
-        if (!lastname) nextErrors.lastname = "Lastname is required.";
-        if (!gender) nextErrors.gender = "Gender is required.";
-        if (!hobbies) nextErrors.hobbies = "Hobbies is required.";
+        const firstName = form.firstName.trim();
+        const lastName = form.lastName.trim();
+        const gender = form.gender.trim();
+        const hobbies = form.hobbies.trim();
 
         if (!email) {
             nextErrors.email = "Email is required.";
         } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-            nextErrors.email = "Enter valid email.";
+            nextErrors.email = "Enter a valid email address.";
         }
 
         if (!password) {
             nextErrors.password = "Password is required.";
         } else if (password.length < 6) {
-            nextErrors.password = "Minimum 6 characters required.";
+            nextErrors.password = "Password must be at least 6 characters.";
         }
+
+        if (!firstName) {
+            nextErrors.firstName = "firstName is required.";
+        } 
+
+        if (!lastName) {
+            nextErrors.lastName = "lastName is required.";
+        } 
+
+        if (!gender) {
+            nextErrors.gender = "gender is required.";
+        } 
+
+        if (!hobbies) {
+            nextErrors.hobbies = "hobbies is required.";
+        } 
+
 
         return nextErrors;
     };
 
-
-    // submit
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-
         const nextErrors = validate();
         setErrors(nextErrors);
+        setStatus({ type: "", message: "" });
+        if (Object.keys(nextErrors).length > 0) {
+            return;
+        }
+        try {
+            setIsSubmitting(true);
+            const email = form.email.trim();
+            const password = form.password.trim();
+            const existingResponse = await fetch(`http://localhost:3001/users?email=${encodeURIComponent(email)}`);
+            if (!existingResponse.ok) {
+                throw new Error("Registration lookup failed.");
+            }
+            const existingUsers = await existingResponse.json();
+            if (existingUsers.length > 0) {
+                setStatus({ type: "error", message: "Email already registered." });
+                return;
+            }
 
-        if (Object.keys(nextErrors).length > 0) return;
+            const payload = {
+                email,
+                password,
+                firstName: form.firstName.trim(),
+                lastName: form.lastName.trim(),
+                gender: form.gender.trim(),
+                hobbies: form.hobbies.trim()
+            };
 
-        console.log("Registration Data:", form);
+            const response = await fetch("http://localhost:3001/users", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            });
+            if (!response.ok) {
+                throw new Error("Registration failed.");
+            }
+            const savedUser = await response.json();
+            console.log("Registered user:", savedUser);
+            setStatus({ type: "success", message: "Registration successful. You can log in now." });
+            setForm({
+                email: "",
+                password: "",
+                firstName: "",
+                lastName: "",
+                gender: "",
+                hobbies: ""
+            });
+        } catch (error) {
+            setStatus({ type: "error", message: error.message || "Registration failed." });
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
-
     return (
-        <form onSubmit={handleSubmit} noValidate>
-
+           
+        <form method="POST" onSubmit={handleSubmit} noValidate>
             <h2>Registration Form</h2>
-
             <div>
-                <label>First Name</label>
-                <input name="firstname" value={form.firstname} onChange={handleChange} />
-                {errors.firstname && <div className="error">{errors.firstname}</div>}
+                <label>Emailid</label>
+                <input type="text" name="email" value={form.email} onChange={handleChnage}/>
+                {errors.email ? <div className="error">{errors.email}</div> : null}
+
+            </div>
+
+             <div>
+                <label>Password</label>
+                <input type="password" name="password" value={form.password} onChange={handleChnage}/>
+                {errors.password ? <div className="error">{errors.password}</div> : null}
+                
             </div>
 
             <div>
-                <label>Last Name</label>
-                <input name="lastname" value={form.lastname} onChange={handleChange} />
-                {errors.lastname && <div className="error">{errors.lastname}</div>}
+                <label>FirstName</label>
+                <input type="text" name="firstName" value={form.firstName} onChange={handleChnage}/>
+                {errors.firstName ? <div className="error">{errors.firstName}</div> : null}
+
             </div>
 
             <div>
+                <label>LastName</label>
+                <input type="text" name="lastName" value={form.lastName} onChange={handleChnage}/>
+                {errors.lastName ? <div className="error">{errors.lastName}</div> : null}
+
+            </div>
+
+             <div>
                 <label>Gender</label>
-                <input name="gender" value={form.gender} onChange={handleChange} />
-                {errors.gender && <div className="error">{errors.gender}</div>}
+                <input type="radio" name="gender" value="Male" checked={form.gender==='Male'}   onChange={handleChnage}/>Male 
+                 <input type="radio" name="gender" value="Female" checked={form.gender==='Female'}   onChange={handleChnage}/>Female
+                {errors.gender ? <div className="error">{errors.gender}</div> : null}
+
             </div>
 
             <div>
                 <label>Hobbies</label>
-                <input name="hobbies" value={form.hobbies} onChange={handleChange} />
-                {errors.hobbies && <div className="error">{errors.hobbies}</div>}
+                <input type="radio" name="hobbies" value="Reading" checked={form.hobbies.includes('Reading')}   onChange={handleChnage}/>Reading 
+                <input type="radio" name="hobbies" value="Travelling" checked={form.hobbies.includes('Travelling')}   onChange={handleChnage}/>Travelling
+                <input type="radio" name="hobbies" value="Music" checked={form.hobbies.includes('Music')}   onChange={handleChnage}/>Music 
+                <input type="radio" name="hobbies" value="Sports" checked={form.hobbies.includes('Sports')}   onChange={handleChnage}/>Sports 
+                 
+                {errors.hobbies ? <div className="error">{errors.hobbies}</div> : null}
+
             </div>
 
-            <div>
-                <label>Email</label>
-                <input name="email" value={form.email} onChange={handleChange} />
-                {errors.email && <div className="error">{errors.email}</div>}
-            </div>
 
-            <div>
-                <label>Password</label>
-                <input type="password" name="password" value={form.password} onChange={handleChange} />
-                {errors.password && <div className="error">{errors.password}</div>}
-            </div>
-
-            <button type="submit">Register</button>
-
+            {status.message ? <div className={status.type === "error" ? "error" : "success"}>{status.message}</div> : null}
+            <button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? "Registering..." : "Register"}
+            </button>
         </form>
-    );
-};
 
-export default Register;
+    );;
+}
+
+
+export default Registration;

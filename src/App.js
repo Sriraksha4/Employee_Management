@@ -1,16 +1,24 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Header from './Header';
+import Footer from './Footer';
+import Login from './Login';
+import Registration from './Registration';
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom';
 
-import Login from "./Login";
-import Register from "./Registration";
 
 function App() {
+  
   return (
     <BrowserRouter>
+      <Header/>
+      <nav>
+        <Link to="/login">Login</Link> | <Link to="/registration">Registration</Link>
+      </nav>
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/registration" element={<Registration />} />
       </Routes>
+      <Footer/>
     </BrowserRouter>
   );
 }

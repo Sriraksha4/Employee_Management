@@ -1,0 +1,31 @@
+{
+  "users": [
+    {
+      "email": "srirakshakr.4@gmail.com",
+      "password": "raki@123",
+      "firstName": "sriraksha",
+      "lastName": "kr",
+      "gender": "Female",
+      "hobbies": "Reading",
+      "id": 1
+    },
+    {
+      "email": "srirakshakr.20@gmail.com",
+      "password": "raksha@123",
+      "firstName": "sriraksha",
+      "lastName": "kr",
+      "gender": "Female",
+      "hobbies": "Travelling",
+      "id": 2
+    },
+    {
+      "email": "srirakshakr.2004@gmail.com",
+      "password": "raksha@123",
+      "firstName": "sriraksha",
+      "lastName": "kr",
+      "gender": "Female",
+      "hobbies": "Travelling",
+      "id": 3
+    }
+  ]
+}
