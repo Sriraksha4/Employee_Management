@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
+<<<<<<< HEAD
     "react-router-dom": "^7.13.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.4"
@@ -16,6 +17,11 @@
   "devDependencies": {
     "json-server": "^0.17.4"
   },
+=======
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+>>>>>>> 6d241635c55156778585e5d804ee8691c27352fd
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
